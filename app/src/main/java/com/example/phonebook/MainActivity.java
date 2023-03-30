@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
                 phoneNumber.setText("");
 
                 Phones contact = new Phones(savedName, savedSurname, savedPhone);
-                phoneBook.setValue(contact);
+                //phoneBook.setValue(contact);
             }
         });
     }
