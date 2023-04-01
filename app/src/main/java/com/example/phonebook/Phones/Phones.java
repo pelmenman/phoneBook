@@ -5,7 +5,8 @@ public class Phones {
 
     public Phones() {}
 
-    public Phones(String name, String surname, String phone) {
+    public Phones(String id, String name, String surname, String phone) {
+        this.id = id;
         this.name = name;
         this.surname = surname;
         this.phone = phone;

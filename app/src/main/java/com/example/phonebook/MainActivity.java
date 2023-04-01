@@ -11,6 +11,7 @@ import android.view.View;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.phonebook.Phones.Phones;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase data;
     private DatabaseReference phoneBook;
     private Button save, read;
+    private String USER_KEY = "User";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,16 +40,15 @@ public class MainActivity extends AppCompatActivity {
         save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String id = phoneBook.getKey();
                 String savedName = name.getText().toString();
                 String savedSurname = surname.getText().toString();
                 String savedPhone = phoneNumber.getText().toString();
 
-                name.setText("");
-                surname.setText("");
-                phoneNumber.setText("");
-
-                Phones contact = new Phones(savedName, savedSurname, savedPhone);
-                //phoneBook.setValue(contact);
+                if(!savedName.isEmpty() && !savedSurname.isEmpty() && !savedPhone.isEmpty()) {
+                    addContact(id, savedName, savedSurname, savedPhone);
+                } else
+                    Toast.makeText(MainActivity.this, "Not all fields are filled", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -61,11 +63,20 @@ public class MainActivity extends AppCompatActivity {
         phoneNumber = findViewById(R.id.phoneNumber);
         phoneNumber.setHint("Phone");
 
-        data = FirebaseDatabase.getInstance("https://phonebook-6d31f-default-rtdb.europe-west1.firebasedatabase.app");
-        phoneBook = data.getReference("Contact");
+        data = FirebaseDatabase.getInstance("https://phonebook-6d31f-default-rtdb.europe-west1.firebasedatabase.app/");
+        phoneBook = data.getReference(USER_KEY);
 
         save = findViewById(R.id.saveButton);
         read = findViewById(R.id.readButton);
+    }
+
+    private void addContact(String id, String savedName, String savedSurname, String savedPhone) {
+        Phones contact = new Phones(id, savedName, savedSurname, savedPhone);
+        phoneBook.push().setValue(contact);
+
+        name.setText("");
+        surname.setText("");
+        phoneNumber.setText("");
     }
 
 }
